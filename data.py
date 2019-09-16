@@ -35,17 +35,19 @@ def read_lines(file_name):
     return [unicode_to_ascii(line) for line in lines_list]
 
 
-"""
-# Build the category_lines dictionary, a list of names per language
-"""
-category_lines = {}
-all_categories = []
-for filename in find_files('data/names/*.txt'):
-    category = os.path.splitext(os.path.basename(filename))[0]
-    all_categories.append(category)
-    lines = read_lines(filename)
-    category_lines[category] = lines
-n_categories = len(all_categories)
+def init_cate_dict():
+    """
+    # Build the category_lines dictionary, a list of names per language
+    """
+    category_lines = {}
+    all_categories = []
+    for filename in find_files('data/names/*.txt'):
+        category = os.path.splitext(os.path.basename(filename))[0]
+        all_categories.append(category)
+        lines = read_lines(filename)
+        category_lines[category] = lines
+    n_categories = len(all_categories)
+    return category_lines, all_categories, n_categories
 
 
 def letter2index(letter):
@@ -67,12 +69,6 @@ def line2tensor(line):
     for li, letter in enumerate(line):
         tensor[li][0][letter2index(letter)] = 1
     return tensor
-
-
-def output2cate(output):
-    top_n, top_i = output.topk(1)
-    category_i = top_i[0].item()
-    return all_categories[category_i], category_i
 
 
 if __name__ == '__main__':

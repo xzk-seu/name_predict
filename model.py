@@ -1,42 +1,29 @@
 import torch
 import torch.nn as nn
-from data import n_letters, n_categories, letter2tensor, output2cate
+
+
+torch.manual_seed(1)    # reproducible
 
 
 class RNN(nn.Module):
-    def __init__(self, input_size, hidden_size, output_size):
+    def __init__(self, input_size, output_size):
         super(RNN, self).__init__()
+        self.rnn = nn.LSTM(
+            input_size=input_size,  # 字符集大小,每个字符用one-hot表示
+            hidden_size=64,  # rnn hidden unit
+            num_layers=2,  # number of rnn layer 多层的话，上层的隐层的输出作为下层的输入
+            batch_first=True,
+        )
 
-        self.hidden_size = hidden_size
+        self.fc = nn.Linear(64, output_size)
 
-        self.i2h = nn.Linear(input_size + hidden_size, hidden_size)
-        self.i2o = nn.Linear(input_size + hidden_size, output_size)
-        self.softmax = nn.LogSoftmax(dim=1)
-        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        self.to(self.device)
+    def forward(self, x):
+        rnn_output, (h_n, c_n) = self.rnn(x, None)
 
-    def forward(self, input_, hidden):
-        input_ = input_.to(self.device)
-        hidden = hidden.to(self.device)
-        combined = torch.cat((input_, hidden), 1)
-        hidden = self.i2h(combined)
-        output = self.i2o(combined)
-        output = self.softmax(output)
-        return output, hidden
-
-    def init_hidden(self):
-        return torch.zeros(1, self.hidden_size)
+        out = self.fc(rnn_output[:, -1, :])
+        return out
 
 
-n_hidden = 128
-rnn = RNN(n_letters, n_hidden, n_categories)
-
-# input_t = letter2tensor('A')
-# hidden_t = torch.zeros(1, n_hidden)
-#
-# output_, next_hidden = rnn(input_t, hidden_t)
-# print(output_)
-#
-# t = output2cate(output_)
-# print(t)
-
+if __name__ == '__main__':
+    rnn = RNN(3, 10)
+    print(rnn)
