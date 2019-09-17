@@ -24,3 +24,5 @@ D
 data/names/Greek.txt,8\7\873db4c25fd3f9c4afa3d4e334a6976cc7fcef88
 F
 data/names/Russian.txt,d\4\d4078f4b14feeba4d041e889f53052eda73adc31
+8
+rnn1.pkl,9\9\99c9c0f6ac9786379db93394026c4d6207572058
