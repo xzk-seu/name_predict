@@ -104,7 +104,7 @@ def run():
         batch_train(rnn, train_set, all_categories)
         model_testing(rnn, test_set, all_categories)
 
-    model_path = os.path.join(os.getcwd(), 'rnn2.pkl')
+    model_path = os.path.join(os.getcwd(), 'rnn3.pkl')
     torch.save(rnn, model_path)  # 保存整个网络
 
 
